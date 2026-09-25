@@ -1,0 +1,153 @@
+#tablero {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, 60px);
+  grid-template-rows: repeat(8, 60px);
+  width: max-content;
+}
+
+.marco {
+  position: absolute;
+  width: 550px;
+  height: 580px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+html {
+    background-image: url(imagenes/wallpaper.jpg);
+    background-color: #000000;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5%;
+
+}
+.overlay {
+  position: absolute;
+  width: 480px;
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("imagenes/Dirt.jpg");
+  background-size: tablero;
+  opacity: 0.6;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.casilla {
+  width: 60px;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.clara {
+  background-color: #ffffff;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.oscura {
+  background-color: #000000;
+  align-items: center;
+  justify-content: center;
+
+}
+.ficha {
+  width: 80%;
+  height: 80%;
+  margin: 10%;
+  border-radius: 50%;
+  box-sizing: border-box;
+  position:relative;
+  z-index: 20;
+  background-size: cover;
+}
+
+.ficha-blanca {
+  border: 2px solid #999;
+  background-image: url(imagenes/whitebutton.png);
+}
+
+.ficha-negra {
+  border: 2px solid #000;
+  background-image: url(imagenes/blackbutton.png);
+}
+.seleccionada {
+  outline: 3px solid #ff0000;
+  outline-offset: -3px;
+  outline-style: ridge ;
+  
+}
+
+.movimiento-valido {
+  position: relative;
+}
+
+
+.ficha-dama {
+  position: relative;
+}
+
+.ficha-dama::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+}
+
+.ficha-blanca.ficha-dama::after {
+  border: 2px solid #dcdcdc;
+  background-image: url(imagenes/whitek.png);
+}
+
+.ficha-negra.ficha-dama::after {
+  border: 2px solid #000000;
+  background-image: url(imagenes/blackk.png);
+}
+
+
+
+.movimiento-valido::after {
+  content: "";
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  background-color: #ff0000;
+}
+#info-juego {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#turno-indicador {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+#mensaje-juego {
+  font-size: 1.1rem;
+  color: #ffcc00;
+  min-height: 1.5em;
+}
+
+
+
+#historial {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 20px;
+}
