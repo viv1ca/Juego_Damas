@@ -294,12 +294,14 @@ function verificarFinDeJuego() {
 
   if (fichasBlancas === 0) {
     juegoTerminado = true;
+    detenerTemporizador();
     mostrarMensaje("¡Ganaron las Negras! Las Blancas se quedaron sin fichas.");
     return;
   }
 
   if (fichasNegras === 0) {
     juegoTerminado = true;
+    detenerTemporizador();
     mostrarMensaje("¡Ganaron las Blancas! Las Negras se quedaron sin fichas.");
     return;
   }
@@ -308,6 +310,7 @@ function verificarFinDeJuego() {
   if (!puedeJugar) {
     juegoTerminado = true;
     const ganador = turnoActual === "blanca" ? "Negras" : "Blancas";
+    detenerTemporizador();
     mostrarMensaje(`¡Ganaron las ${ganador}! El otro jugador quedó acorralado.`);
     return;
   }
@@ -350,10 +353,61 @@ function reiniciarJuego() {
   juegoTerminado = false;
   historialMovimientos = [];
   listaHistorial.innerHTML = "";
+  tiempoBlancas = 120;
+  tiempoNegras = 120;
 
   mostrarMensaje("");
   actualizarIndicadorTurno();
+  actualizarDisplayTemporizador();
   dibujarTablero();
+  iniciarTemporizador(); 
+}
+
+let tiempoBlancas = 120; // 2 minutos, en segundos
+let tiempoNegras = 120;
+let intervaloTemporizador = null;
+
+const tiempoBlancasEl = document.getElementById("tiempo-blancas");
+const tiempoNegrasEl = document.getElementById("tiempo-negras");
+
+function formatearTiempo(segundosTotales) {
+  const minutos = Math.floor(segundosTotales / 60);
+  const segundos = segundosTotales % 60;
+  const segundosTexto = segundos < 10 ? `0${segundos}` : `${segundos}`;
+  return `${minutos}:${segundosTexto}`;
+}
+
+function actualizarDisplayTemporizador() {
+  tiempoBlancasEl.textContent = `Blancas: ${formatearTiempo(tiempoBlancas)}`;
+  tiempoNegrasEl.textContent = `Negras: ${formatearTiempo(tiempoNegras)}`;
+}
+
+function detenerTemporizador() {
+  if (intervaloTemporizador !== null) {
+    clearInterval(intervaloTemporizador);
+    intervaloTemporizador = null;
+  }
+}
+
+function iniciarTemporizador() {
+  detenerTemporizador(); // por si ya había uno corriendo, lo cortamos primero
+
+  intervaloTemporizador = setInterval(() => {
+    if (turnoActual === "blanca") {
+      tiempoBlancas--;
+    } else {
+      tiempoNegras--;
+    }
+
+    actualizarDisplayTemporizador();
+
+    if (tiempoBlancas <= 0 || tiempoNegras <= 0) {
+      detenerTemporizador();
+      juegoTerminado = true;
+      const ganador = tiempoBlancas <= 0 ? "Negras" : "Blancas";
+      mostrarMensaje(`¡Ganaron las ${ganador}! Se acabó el tiempo del rival.`);
+    }
+  }, 1000);
 }
 
 btnReiniciar.addEventListener("click", reiniciarJuego);
@@ -426,6 +480,9 @@ contenedorTablero.addEventListener("click", (evento) => {
           cambiarTurno();
           actualizarIndicadorTurno();
           verificarFinDeJuego();
+          if (!juegoTerminado) {
+            iniciarTemporizador();
+          } 
         }
       }
       // Si no era una captura válida, no hacemos nada (el clic se ignora)
@@ -448,6 +505,9 @@ contenedorTablero.addEventListener("click", (evento) => {
         cambiarTurno();
         actualizarIndicadorTurno();
         verificarFinDeJuego();
+        if (!juegoTerminado) {
+            iniciarTemporizador();
+          } 
       }
     }
   }
@@ -461,3 +521,5 @@ contenedorTablero.addEventListener("click", (evento) => {
 InicializarFichas();
 dibujarTablero();
 actualizarIndicadorTurno(); 
+actualizarDisplayTemporizador(); // NUEVO
+iniciarTemporizador();
