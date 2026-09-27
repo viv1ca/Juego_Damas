@@ -138,7 +138,7 @@ function moverFicha(origen, destino) { //recibe dos objetos como parámetros cad
 // Calcula las capturas posibles de una ficha específica
 function obtenerCapturasPosibles(fila, columna) {
   const colorFicha = tablero[fila][columna];
-  const colorRival = colorFicha === "blanca" ? "negra" : "blanca";
+  const colorRival = obtenerColorBase(colorFicha) === "blanca" ? "negra" : "blanca";
   const capturas = [];
 
   let posiblesDirecciones;
@@ -240,8 +240,127 @@ function cambiarTurno() {
   turnoActual = turnoActual === "blanca" ? "negra" : "blanca";
 }
 
-// Listener de clics, ahora con turnos y capturas obligatorias
+
+let juegoTerminado = false;
+let historialMovimientos = [];
+
+const turnoIndicador = document.getElementById("turno-indicador");
+const mensajeJuego = document.getElementById("mensaje-juego");
+const listaHistorial = document.getElementById("lista-historial");
+const btnReiniciar = document.getElementById("btn-reiniciar");
+
+// Cuenta cuántas fichas le quedan a un color (normales + damas)
+function contarFichas(color) {
+  let contador = 0;
+  for (let fila = 0; fila < 8; fila++) {
+    for (let columna = 0; columna < 8; columna++) {
+      if (obtenerColorBase(tablero[fila][columna]) === color) {
+        contador++;
+      }
+    }
+  }
+  return contador;
+}
+
+// Revisa si un jugador tiene AL MENOS un movimiento o captura posible
+function jugadorTieneMovimientos(color) {
+  for (let fila = 0; fila < 8; fila++) {
+    for (let columna = 0; columna < 8; columna++) {
+      if (obtenerColorBase(tablero[fila][columna]) === color) {
+        const movimientos = obtenerMovimientosValidos(fila, columna);
+        const capturas = obtenerCapturasPosibles(fila, columna);
+        if (movimientos.length > 0 || capturas.length > 0) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function actualizarIndicadorTurno() {
+  const nombreTurno = turnoActual === "blanca" ? "Blancas" : "Negras";
+  turnoIndicador.textContent = `Turno: ${nombreTurno}`;
+}
+
+function mostrarMensaje(texto) {
+  mensajeJuego.textContent = texto;
+}
+
+// Revisa las dos condiciones de fin de juego y actualiza el mensaje
+function verificarFinDeJuego() {
+  const fichasBlancas = contarFichas("blanca");
+  const fichasNegras = contarFichas("negra");
+
+  if (fichasBlancas === 0) {
+    juegoTerminado = true;
+    mostrarMensaje("¡Ganaron las Negras! Las Blancas se quedaron sin fichas.");
+    return;
+  }
+
+  if (fichasNegras === 0) {
+    juegoTerminado = true;
+    mostrarMensaje("¡Ganaron las Blancas! Las Negras se quedaron sin fichas.");
+    return;
+  }
+
+  const puedeJugar = jugadorTieneMovimientos(turnoActual);
+  if (!puedeJugar) {
+    juegoTerminado = true;
+    const ganador = turnoActual === "blanca" ? "Negras" : "Blancas";
+    mostrarMensaje(`¡Ganaron las ${ganador}! El otro jugador quedó acorralado.`);
+    return;
+  }
+
+  mostrarMensaje("");
+}
+
+// Convierte una posición (fila, columna) a notación tipo "c4"
+function convertirANotacion(fila, columna) {
+  const letras = "abcdefgh";
+  return `${letras[columna]}${8 - fila}`;
+}
+
+function registrarMovimiento(origen, destino, fueCaptura) {
+  const numero = historialMovimientos.length + 1;
+  const notacionOrigen = convertirANotacion(origen.fila, origen.columna);
+  const notacionDestino = convertirANotacion(destino.fila, destino.columna);
+  const simbolo = fueCaptura ? "x" : "-";
+  const texto = `${numero}. ${notacionOrigen}${simbolo}${notacionDestino}`;
+
+  historialMovimientos.push(texto);
+
+  const item = document.createElement("li");
+  item.textContent = texto;
+  listaHistorial.appendChild(item);
+}
+
+function reiniciarJuego() {
+  console.log("reiniciarJuego se ejecutó");
+  for (let fila = 0; fila < 8; fila++) {
+    for (let columna = 0; columna < 8; columna++) {
+      tablero[fila][columna] = null;
+    }
+  }
+  InicializarFichas();
+
+  turnoActual = "blanca";
+  fichaSeleccionada = null;
+  fichaEnCadena = null;
+  juegoTerminado = false;
+  historialMovimientos = [];
+  listaHistorial.innerHTML = "";
+
+  mostrarMensaje("");
+  actualizarIndicadorTurno();
+  dibujarTablero();
+}
+
+btnReiniciar.addEventListener("click", reiniciarJuego);
+
+//listener clics
 contenedorTablero.addEventListener("click", (evento) => {
+  if (juegoTerminado) return;
   const casilla = evento.target.closest(".casilla");
   if (!casilla) return;
 
@@ -288,8 +407,10 @@ contenedorTablero.addEventListener("click", (evento) => {
     if (hayCapturasObligatorias) {
       // Solo se permite mover si es una captura válida
       if (capturaElegida) {
+        const origenCaptura = { fila: fichaSeleccionada.fila, columna: fichaSeleccionada.columna };
         const eraDamaAntes = esDama(tablero[fichaSeleccionada.fila][fichaSeleccionada.columna]);
         ejecutarCaptura(fichaSeleccionada, capturaElegida);
+        registrarMovimiento(origenCaptura, { fila: fila, columna: columna }, true);
 
         const yaEsDama = esDama(tablero[fila][columna]);
         const seAcabaDeCoronar = !eraDamaAntes && yaEsDama;
@@ -303,6 +424,8 @@ contenedorTablero.addEventListener("click", (evento) => {
           fichaSeleccionada = null;
           fichaEnCadena = null;
           cambiarTurno();
+          actualizarIndicadorTurno();
+          verificarFinDeJuego();
         }
       }
       // Si no era una captura válida, no hacemos nada (el clic se ignora)
@@ -318,9 +441,13 @@ contenedorTablero.addEventListener("click", (evento) => {
       );
 
       if (esMovimientoValido) {
+        const origenMovimiento = { fila: fichaSeleccionada.fila, columna: fichaSeleccionada.columna };
         moverFicha(fichaSeleccionada, { fila: fila, columna: columna });
+        registrarMovimiento(origenMovimiento, { fila: fila, columna: columna }, false);
         fichaSeleccionada = null;
         cambiarTurno();
+        actualizarIndicadorTurno();
+        verificarFinDeJuego();
       }
     }
   }
@@ -333,3 +460,4 @@ contenedorTablero.addEventListener("click", (evento) => {
 //Inicializar juego
 InicializarFichas();
 dibujarTablero();
+actualizarIndicadorTurno(); 
