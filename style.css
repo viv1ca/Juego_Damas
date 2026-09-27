@@ -5,11 +5,17 @@
   grid-template-rows: repeat(8, 60px);
   width: max-content;
 }
+.tablero-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .marco {
   position: absolute;
-  width: 550px;
-  height: 580px;
+  width: 580px;
+  height: 600px;
   z-index: 100;
   display: flex;
   align-items: center;
@@ -21,10 +27,16 @@ html {
 }
 body {
   display: flex;
-  align-items: center;
   justify-content: center;
-  margin-top: 5%;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
 
+}
+.contenedor-juego {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .overlay {
   position: absolute;
@@ -128,14 +140,17 @@ body {
   border-radius: 50%;
   background-color: #ff0000;
 }
+
 #info-juego {
   text-align: center;
   margin-top: 20px;
+  color: #ffffff;
 }
 
 #turno-indicador {
   font-size: 1.2rem;
   font-weight: bold;
+  color: #ffffff;
 }
 
 #mensaje-juego {
@@ -144,10 +159,16 @@ body {
   min-height: 1.5em;
 }
 
-
+#btn-reiniciar {
+  padding: 8px 16px;
+  cursor: pointer;
+}
 
 #historial {
   max-height: 300px;
   overflow-y: auto;
-  margin-top: 20px;
+  color: #ffffff;
+  background-color: #99999934;
+  border: 5px solid #171717;
+  
 }
