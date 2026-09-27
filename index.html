@@ -8,12 +8,28 @@
     <link rel="shortcut icon" href="imagenes/reina.ico" type="image/x-icon">
 </head>
 <body>
-    <img src="imagenes/marco.png" alt="Marco del tablero" class="marco">
-    <div id="tablero"></div>
-    <div class="overlay"></div>
-    <script src="script.js"></script>
+    <div class="contenedor-juego">
+        <div class="tablero-wrapper">
+            <img src="imagenes/marco.png" alt="Marco del tablero" class="marco">
+            <div class="overlay"></div>
+            <div id="tablero"></div>
+        </div>
+        
+        <div id="info-juego">
+            <p id="turno-indicador"></p>
+            <p id="mensaje-juego"></p>
+            <button id="btn-reiniciar">Reiniciar partida</button>
+        </div>
+        
+        <div id="historial">
+            <h3>Historial de movimientos</h3>
+            <ol id="lista-historial"></ol>
+        </div>
+
+        
+    </div>
 
     
-        
+ <script src="script.js"></script>       
 </body>
 </html>
