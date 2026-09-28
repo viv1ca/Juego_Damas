@@ -11,6 +11,15 @@
   align-items: center;
   justify-content: center;
 }
+button
+{
+  background-image: url(imagenes/botones.jpg) ;
+  background-color: #999;
+  color: #ffffff;
+  background-size: cover;
+  width: 160px;
+  height: 50px;
+}
 
 .marco {
   position: absolute;
