@@ -70,7 +70,6 @@ body {
   align-items: center;
   justify-content: center;
   background-image: url("imagenes/Dirt.jpg");
-  background-size: tablero;
   opacity: 0.6;
   z-index: 10;
   pointer-events: none;
@@ -79,21 +78,18 @@ body {
 .casilla {
   width: 60px;
   height: 60px;
-  align-items: center;
   justify-content: center;
 
 }
 
 .clara {
   background-color: #ffffff;
-  align-items: center;
   justify-content: center;
 
 }
 
 .oscura {
   background-color: #000000;
-  align-items: center;
   justify-content: center;
 
 }
@@ -166,11 +162,9 @@ body {
 }
 
 #temporizadores {
-  margin-top: 5%;
   text-align: center;
   color: #ffffff;
   margin-top: 15%;
-  justify-self: end;
 }
 
 #mensaje-juego {
