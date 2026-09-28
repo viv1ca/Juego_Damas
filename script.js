@@ -31,12 +31,21 @@ function dibujarTablero() {
   contenedorTablero.innerHTML = ""; // limpia antes de redibujar
 
    let movimientosValidos = []; // obtiene los movimientos validos y los guarda en un arreglo
-    if (fichaSeleccionada !== null) {
-    movimientosValidos = obtenerMovimientosValidos(
-      fichaSeleccionada.fila,
-      fichaSeleccionada.columna
-    );
+  if (fichaSeleccionada !== null) {
+    if (jugadorTieneCapturas(turnoActual)) {
+      // Hay captura obligatoria: se marcan los destinos de las capturas
+      movimientosValidos = obtenerCapturasPosibles(
+        fichaSeleccionada.fila,
+        fichaSeleccionada.columna
+      );
+    } else {
+      // No hay captura obligatoria: se marcan los movimientos simples
+      movimientosValidos = obtenerMovimientosValidos(
+        fichaSeleccionada.fila,
+        fichaSeleccionada.columna
+      );
     }
+  }
 
   for (let fila = 0; fila < 8; fila++) { //recorre filas
     for (let columna = 0; columna < 8; columna++) { //recorre columnas
