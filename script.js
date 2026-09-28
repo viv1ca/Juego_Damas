@@ -339,7 +339,7 @@ function registrarMovimiento(origen, destino, fueCaptura) {
 }
 
 function reiniciarJuego() {
-  console.log("reiniciarJuego se ejecutó");
+  detenerTemporizador();
   for (let fila = 0; fila < 8; fila++) {
     for (let columna = 0; columna < 8; columna++) {
       tablero[fila][columna] = null;
@@ -436,6 +436,8 @@ function guardarPartida() {
     historialMovimientos: historialMovimientos,
     tiempoBlancas: tiempoBlancas,
     tiempoNegras: tiempoNegras,
+    juegoTerminado: juegoTerminado,
+    mensaje: mensajeJuego.textContent,
   };
 
   const partidasGuardadas = obtenerPartidasGuardadas();
@@ -475,7 +477,10 @@ function mostrarListaGuardadas() {
 function cargarPartida(indice) {
   const partidasGuardadas = obtenerPartidasGuardadas();
   const partida = partidasGuardadas[indice];
+
   if (!partida) return;
+
+  detenerTemporizador();
 
   for (let fila = 0; fila < 8; fila++) {
     for (let columna = 0; columna < 8; columna++) {
@@ -489,7 +494,7 @@ function cargarPartida(indice) {
   tiempoNegras = partida.tiempoNegras;
   fichaSeleccionada = null;
   fichaEnCadena = null;
-  juegoTerminado = false;
+  juegoTerminado = partida.juegoTerminado === true;
 
   listaHistorial.innerHTML = "";
   historialMovimientos.forEach((texto) => {
@@ -498,11 +503,10 @@ function cargarPartida(indice) {
     listaHistorial.appendChild(item);
   });
 
-  mostrarMensaje("");
+  mostrarMensaje(partida.mensaje || "");
   actualizarIndicadorTurno();
   actualizarDisplayTemporizador();
   dibujarTablero();
-  iniciarTemporizador();
 
   modalGuardadas.classList.add("oculto");
 }
