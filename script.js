@@ -244,7 +244,7 @@ function cambiarTurno() {
 let juegoTerminado = false;
 let historialMovimientos = [];
 
-const turnoIndicador = document.getElementById("turno-indicador");
+
 const mensajeJuego = document.getElementById("mensaje-juego");
 const listaHistorial = document.getElementById("lista-historial");
 const btnReiniciar = document.getElementById("btn-reiniciar");
@@ -278,10 +278,6 @@ function jugadorTieneMovimientos(color) {
   return false;
 }
 
-function actualizarIndicadorTurno() {
-  const nombreTurno = turnoActual === "blanca" ? "Blancas" : "Negras";
-  turnoIndicador.textContent = `Turno: ${nombreTurno}`;
-}
 
 function mostrarMensaje(texto) {
   mensajeJuego.textContent = texto;
@@ -358,7 +354,6 @@ function reiniciarJuego() {
 
   mostrarMensaje("");
   actualizarDisplayTemporizador();
-  actualizarIndicadorTurno();
   dibujarTablero(); 
 }
 
@@ -504,7 +499,6 @@ function cargarPartida(indice) {
   });
 
   mostrarMensaje(partida.mensaje || "");
-  actualizarIndicadorTurno();
   actualizarDisplayTemporizador();
   dibujarTablero();
 
@@ -590,7 +584,6 @@ contenedorTablero.addEventListener("click", (evento) => {
           fichaSeleccionada = null;
           fichaEnCadena = null;
           cambiarTurno();
-          actualizarIndicadorTurno();
           verificarFinDeJuego();
           if (!juegoTerminado) {
             iniciarTemporizador();
@@ -615,7 +608,6 @@ contenedorTablero.addEventListener("click", (evento) => {
         registrarMovimiento(origenMovimiento, { fila: fila, columna: columna }, false);
         fichaSeleccionada = null;
         cambiarTurno();
-        actualizarIndicadorTurno();
         verificarFinDeJuego();
         if (!juegoTerminado) {
             iniciarTemporizador();
@@ -631,6 +623,5 @@ contenedorTablero.addEventListener("click", (evento) => {
 
 //Inicializar juego
 InicializarFichas();
-actualizarIndicadorTurno(); 
 actualizarDisplayTemporizador();
 dibujarTablero();

@@ -9,32 +9,30 @@
 </head>
 <body>
     <div class="contenedor-juego">
-        <div class="tablero-wrapper">
-            <img src="imagenes/marco.png" alt="Marco del tablero" class="marco">
-            <div class="overlay"></div>
-            <div id="tablero"></div>
-        </div>
-        
-        <div id="info-juego">
-            <p id="turno-indicador"></p>
-            <p id="mensaje-juego"></p>
-
-            <div id="temporizadores">
-                <p id="tiempo-blancas">Blancas: 2:00</p>
-                <p id="tiempo-negras">Negras: 2:00</p>
-            </div>
-
-            <button id="btn-reiniciar">Reiniciar partida</button>
-        </div>
 
         <div id="historial">
             <h3>Historial de movimientos</h3>
             <ol id="lista-historial"></ol>
         </div>
 
-        <button id="btn-guardar">Guardar partida</button>
-        <button id="btn-ver-guardadas">Partidas guardadas</button>
+        <div class="columna-central">
+            <div class="tablero-wrapper">
+                <img src="imagenes/marco.png" alt="Marco del tablero" class="marco">
+                <div class="overlay"></div>
+                <div id="tablero"></div>
+            </div>
+                <div id="temporizadores">
+                    <p id="tiempo-blancas">Blancas: 2:00</p>
+                    <p id="tiempo-negras">Negras: 2:00</p>
+                </div>
 
+                <div class="botones">
+                    <button id="btn-reiniciar">Reiniciar partida</button>
+                    <button id="btn-guardar">Guardar partida</button>
+                    <button id="btn-ver-guardadas">Partidas guardadas</button>
+                </div>
+        </div>
+        
         <div id="modal-guardadas" class="oculto">
         <div class="modal-contenido">
             <h3>Partidas guardadas</h3>
@@ -43,6 +41,8 @@
         </div>
         </div>
 
+        <p id="mensaje-juego"></p>
+    
         
     </div>
 
