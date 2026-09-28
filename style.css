@@ -197,6 +197,7 @@ body {
   color: #ffffff;
   background-color: #99999934;
   border: 5px solid #171717;
+  justify-items: center;
   
 }
 #modal-guardadas.oculto {
