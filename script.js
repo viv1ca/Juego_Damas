@@ -357,10 +357,9 @@ function reiniciarJuego() {
   tiempoNegras = 120;
 
   mostrarMensaje("");
-  actualizarIndicadorTurno();
   actualizarDisplayTemporizador();
-  dibujarTablero();
-  iniciarTemporizador(); 
+  actualizarIndicadorTurno();
+  dibujarTablero(); 
 }
 
 let tiempoBlancas = 120; // 2 minutos, en segundos
@@ -411,6 +410,115 @@ function iniciarTemporizador() {
 }
 
 btnReiniciar.addEventListener("click", reiniciarJuego);
+
+
+
+const btnGuardar = document.getElementById("btn-guardar");
+const btnVerGuardadas = document.getElementById("btn-ver-guardadas");
+const modalGuardadas = document.getElementById("modal-guardadas");
+const listaGuardadas = document.getElementById("lista-guardadas");
+const btnCerrarModal = document.getElementById("btn-cerrar-modal");
+
+function obtenerPartidasGuardadas() {
+  const datos = localStorage.getItem("partidasDamas");
+  return datos ? JSON.parse(datos) : [];
+}
+
+function guardarPartida() {
+  const nombre = prompt("Nombre para esta partida guardada:");
+  if (!nombre) return;
+
+  const estado = {
+    nombre: nombre,
+    fecha: new Date().toLocaleString(),
+    tablero: tablero,
+    turnoActual: turnoActual,
+    historialMovimientos: historialMovimientos,
+    tiempoBlancas: tiempoBlancas,
+    tiempoNegras: tiempoNegras,
+  };
+
+  const partidasGuardadas = obtenerPartidasGuardadas();
+  partidasGuardadas.push(estado);
+  localStorage.setItem("partidasDamas", JSON.stringify(partidasGuardadas));
+
+  alert("Partida guardada correctamente.");
+}
+
+function mostrarListaGuardadas() {
+  const partidasGuardadas = obtenerPartidasGuardadas();
+  listaGuardadas.innerHTML = "";
+
+  partidasGuardadas.forEach((partida, indice) => {
+    const item = document.createElement("li");
+
+    const texto = document.createElement("span");
+    texto.textContent = `${partida.nombre} — ${partida.fecha}`;
+
+    const btnCargar = document.createElement("button");
+    btnCargar.textContent = "Cargar";
+    btnCargar.addEventListener("click", () => cargarPartida(indice));
+
+    const btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "Eliminar";
+    btnEliminar.addEventListener("click", () => eliminarPartida(indice));
+
+    item.appendChild(texto);
+    item.appendChild(btnCargar);
+    item.appendChild(btnEliminar);
+    listaGuardadas.appendChild(item);
+  });
+
+  modalGuardadas.classList.remove("oculto");
+}
+
+function cargarPartida(indice) {
+  const partidasGuardadas = obtenerPartidasGuardadas();
+  const partida = partidasGuardadas[indice];
+  if (!partida) return;
+
+  for (let fila = 0; fila < 8; fila++) {
+    for (let columna = 0; columna < 8; columna++) {
+      tablero[fila][columna] = partida.tablero[fila][columna];
+    }
+  }
+
+  turnoActual = partida.turnoActual;
+  historialMovimientos = partida.historialMovimientos;
+  tiempoBlancas = partida.tiempoBlancas;
+  tiempoNegras = partida.tiempoNegras;
+  fichaSeleccionada = null;
+  fichaEnCadena = null;
+  juegoTerminado = false;
+
+  listaHistorial.innerHTML = "";
+  historialMovimientos.forEach((texto) => {
+    const item = document.createElement("li");
+    item.textContent = texto;
+    listaHistorial.appendChild(item);
+  });
+
+  mostrarMensaje("");
+  actualizarIndicadorTurno();
+  actualizarDisplayTemporizador();
+  dibujarTablero();
+  iniciarTemporizador();
+
+  modalGuardadas.classList.add("oculto");
+}
+
+function eliminarPartida(indice) {
+  const partidasGuardadas = obtenerPartidasGuardadas();
+  partidasGuardadas.splice(indice, 1);
+  localStorage.setItem("partidasDamas", JSON.stringify(partidasGuardadas));
+  mostrarListaGuardadas();
+}
+
+btnGuardar.addEventListener("click", guardarPartida);
+btnVerGuardadas.addEventListener("click", mostrarListaGuardadas);
+btnCerrarModal.addEventListener("click", () => modalGuardadas.classList.add("oculto"));
+
+
 
 //listener clics
 contenedorTablero.addEventListener("click", (evento) => {
@@ -519,7 +627,6 @@ contenedorTablero.addEventListener("click", (evento) => {
 
 //Inicializar juego
 InicializarFichas();
-dibujarTablero();
 actualizarIndicadorTurno(); 
-actualizarDisplayTemporizador(); // NUEVO
-iniciarTemporizador();
+actualizarDisplayTemporizador();
+dibujarTablero();
